@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.List;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -13,7 +14,8 @@ import tiles.Tile;
 public class Lattice extends JPanel {
 
 	private int gridSize;
-	private Tile[][] tiles;
+	private boolean[][] occupied;
+	private ArrayList<Tile> tiles;
 	private PreyPopulation preyPopulation;
 	
 	private static final long serialVersionUID = 1L;
@@ -28,14 +30,17 @@ public class Lattice extends JPanel {
 	{
 		this.gridSize = gridSize;
 		
-		tiles = new Tile[gridSize][];
+		//tiles = new Tile[gridSize][];
+		tiles = new ArrayList<Tile>();
+		
+		boolean[][] occupied = new boolean[gridSize][];
 		for(int i=0; i<gridSize; i++)
 		{
-			Tile[] row = new Tile[gridSize];
+			boolean[] row = new boolean[gridSize];
 			for(int j=0; j<gridSize; j++){
-				row[j] = new Tile(i,j);
+				row[j] = false;
 			}
-			tiles[i] = row;
+			occupied[i] = row;
 		}
 		int nTiles = (int) Math.pow(gridSize, 2);
 		int nAnglerFish = (int) (angerFishPercentage * nTiles);
@@ -46,8 +51,9 @@ public class Lattice extends JPanel {
 			int i = random.nextInt(gridSize);
 			int j = random.nextInt(gridSize);
 			
-			if(!(tiles[i][j] instanceof FoodTile)){
-				tiles[i][j] = new FoodTile(i, j);
+			if(!occupied[i][j]){
+				tiles.add(new FoodTile(i, j));
+				occupied[i][j] = true;
 				nFood--;
 			}
 		}
@@ -57,12 +63,11 @@ public class Lattice extends JPanel {
 		{
 			int i = random.nextInt(gridSize);
 			int j = random.nextInt(gridSize);
-			
-			Tile t = tiles[i][j]; 
-			if(!(	(t instanceof Anglerfish) ||
-					(t instanceof FoodTile))){
+			 
+			if(!occupied[i][j]){
 				Anglerfish f = new Anglerfish(i, j); 
-				tiles[i][j] = f;
+				occupied[i][j] = true;
+				tiles.add(f);
 				anglerFishes.add(f);
 				
 				nAnglerFish--;
@@ -76,45 +81,40 @@ public class Lattice extends JPanel {
 			int j = random.nextInt(gridSize);
 			
 			double caution = random.nextDouble();
-			
-			Tile t = tiles[i][j]; 
-			if(!(	(t instanceof Prey)) ||
-					(t instanceof Anglerfish) || 
-					(t instanceof FoodTile )){
+
+			if(!occupied[i][j]){
 				Prey p = new Prey(i, j, caution, gridSize, anglerFishes);
-				tiles[i][j] = p;
+				occupied[i][j] = true;
+				tiles.add(p);
 				preyPopulation.addPrey(p);
 				preyPopulationSize--;
 			}
 		}
-		int nIterations = 100;
-		while(nIterations-- > 0)
-		{
-			preyPopulation.movePopulation();
-			this.revalidate();
-			this.invalidate();
-			this.repaint();
-		}
-		
-		
 	}
+	
+	public void update(){
+		preyPopulation.movePopulation();
+		this.revalidate();
+		this.invalidate();
+		this.repaint();
+	}
+	
 	public void paintComponent(Graphics g) {
         super.paintComponent(g); 
         
+        this.setBackground(Color.blue);
         int windowWidth = this.getWidth();
 		int windowHeight = this.getHeight();
 		
 		int tileWidth = windowWidth / gridSize;
 		int tileHeight = windowHeight / gridSize;
-		
-		Random random = new Random();
-		for(int i=0; i<gridSize; i++)
-			for(int j=0; j<gridSize; j++)
-			{
-				int r = random.nextInt(255);
-				g.setColor(tiles[i][j].getColor());
-				g.fillRect(i*tileWidth, j*tileHeight, tileWidth, tileHeight);
-			}
+
+		for (Tile tile : tiles) {
+			g.setColor(tile.getColor());
+			g.fillRect(tile.getX()*tileWidth, tile.getY()*tileHeight, tileWidth, tileHeight);
+		}
+				
+
     }  
 
 }

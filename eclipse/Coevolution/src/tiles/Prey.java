@@ -16,6 +16,9 @@ public class Prey extends Tile {
 		this.caution = caution;
 		this.gridSize = gridSize;
 		this.anglerfishes = anglerfishes;
+		
+		speedX = random.nextInt()%2==0 ? 1 : -1;
+		speedY = random.nextInt()%2==0 ? 1 : -1;
 	}
 	
 	@Override

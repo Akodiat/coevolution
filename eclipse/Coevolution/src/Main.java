@@ -13,10 +13,22 @@ public class Main {
 	
 	private static void openWindow() {
 		JFrame f = new JFrame("Angler fish simulation");
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        f.add(new Lattice(latticeSize, angerFishPercentage, foodPercentage, preyPopulationSize));
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Lattice lattice = new Lattice(latticeSize, angerFishPercentage, foodPercentage, preyPopulationSize);
+        f.add(lattice);
         f.setSize(250,250);
         f.setVisible(true);	
+        
+		int nIterations = 10000;
+		while(nIterations-- > 0)
+		{
+			lattice.update();
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }
