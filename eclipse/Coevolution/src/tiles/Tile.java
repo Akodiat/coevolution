@@ -1,5 +1,7 @@
 package tiles;
 
+import java.awt.Color;
+
 public class Tile {
 	protected int x;
 	protected int y;
@@ -7,6 +9,11 @@ public class Tile {
 	public Tile(int x, int y){
 		this.x = x;
 		this.y = y;
+	}
+	
+	public Color getColor()
+	{
+		return Color.blue;
 	}
 
 	public int getX() {

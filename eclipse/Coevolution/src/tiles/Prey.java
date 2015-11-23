@@ -1,5 +1,6 @@
 package tiles;
 
+import java.awt.Color;
 import java.util.Random;
 
 public class Prey extends Tile {
@@ -12,6 +13,11 @@ public class Prey extends Tile {
 		super(x, y);
 		this.caution = caution;
 		this.gridSize = gridSize;
+	}
+	
+	@Override
+	public Color getColor() {
+		return Color.white;
 	}
 	
 	public void move()
