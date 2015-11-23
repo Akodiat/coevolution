@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -13,6 +14,7 @@ public class Lattice extends JPanel {
 
 	private int gridSize;
 	private Tile[][] tiles;
+	private PreyPopulation preyPopulation;
 	
 	private static final long serialVersionUID = 1L;
 	private Random random = new Random();
@@ -36,7 +38,7 @@ public class Lattice extends JPanel {
 			tiles[i] = row;
 		}
 		int nTiles = (int) Math.pow(gridSize, 2);
-		int nAngerFish = (int) (angerFishPercentage * nTiles);
+		int nAnglerFish = (int) (angerFishPercentage * nTiles);
 		
 		int nFood = (int) (foodPercentage * nTiles);
 		while(nFood > 0)
@@ -50,6 +52,24 @@ public class Lattice extends JPanel {
 			}
 		}
 		
+		ArrayList<Anglerfish> anglerFishes = new ArrayList<Anglerfish>();
+		while(nAnglerFish > 0)
+		{
+			int i = random.nextInt(gridSize);
+			int j = random.nextInt(gridSize);
+			
+			Tile t = tiles[i][j]; 
+			if(!(	(t instanceof Anglerfish) ||
+					(t instanceof FoodTile))){
+				Anglerfish f = new Anglerfish(i, j); 
+				tiles[i][j] = f;
+				anglerFishes.add(f);
+				
+				nAnglerFish--;
+			}
+		}
+		
+		preyPopulation = new PreyPopulation(preyPopulationSize);
 		while(preyPopulationSize > 0)
 		{
 			int i = random.nextInt(gridSize);
@@ -58,25 +78,25 @@ public class Lattice extends JPanel {
 			double caution = random.nextDouble();
 			
 			Tile t = tiles[i][j]; 
-			if(!((t instanceof Prey)) || (t instanceof FoodTile )){
-				tiles[i][j] = new Prey(i, j, caution, gridSize);
+			if(!(	(t instanceof Prey)) ||
+					(t instanceof Anglerfish) || 
+					(t instanceof FoodTile )){
+				Prey p = new Prey(i, j, caution, gridSize, anglerFishes);
+				tiles[i][j] = p;
+				preyPopulation.addPrey(p);
 				preyPopulationSize--;
 			}
 		}
-		
-		while(nAngerFish > 0)
+		int nIterations = 100;
+		while(nIterations-- > 0)
 		{
-			int i = random.nextInt(gridSize);
-			int j = random.nextInt(gridSize);
-			
-			Tile t = tiles[i][j]; 
-			if(!(	(t instanceof Anglerfish) ||
-					(t instanceof Prey) || 
-					(t instanceof FoodTile))){
-				tiles[i][j] = new Anglerfish(i, j);
-				nAngerFish--;
-			}
+			preyPopulation.movePopulation();
+			this.revalidate();
+			this.invalidate();
+			this.repaint();
 		}
+		
+		
 	}
 	public void paintComponent(Graphics g) {
         super.paintComponent(g); 

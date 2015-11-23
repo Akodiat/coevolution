@@ -11,17 +11,18 @@ public class PreyPopulation {
 	ArrayList<Prey> population;
 	Random random = new Random();
 	
-	public PreyPopulation(int populationSize, int gridSize){
+	public PreyPopulation(int populationSize){
 		population = new ArrayList<Prey>();
-		for(int i=0; i<populationSize; i++){
-			int x = random.nextInt(gridSize);
-			int y = random.nextInt(gridSize);
-			
-			double caution = random.nextDouble();
-			
-			population.add(new Prey(x,y,caution,gridSize));
-
+	}
+	
+	public void addPrey(Prey p)
+	{
+		population.add(p);
+	}
+	
+	public void movePopulation(){
+		for (Prey prey : population) {
+			prey.move();
 		}
-			
 	}
 }
