@@ -1,7 +1,11 @@
-package tiles;
+
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.swing.JFrame;
+
+import tiles.Prey;
 
 public class PreyPopulation {
 	ArrayList<Prey> population;
@@ -16,6 +20,7 @@ public class PreyPopulation {
 			double caution = random.nextDouble();
 			
 			population.add(new Prey(x,y,caution,gridSize));
+
 		}
 			
 	}
