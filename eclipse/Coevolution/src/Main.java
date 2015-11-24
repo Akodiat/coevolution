@@ -2,7 +2,7 @@ import javax.swing.JFrame;
 
 public class Main {
 
-	private static int latticeSize 			= 50;
+	private static int latticeSize 			= 20;
 	private static double angerFishPercentage 	= 0.02;
 	private static double foodPercentage 		= 0.6;
 	private static int preyPopulationSize		= 25;
@@ -24,7 +24,7 @@ public class Main {
 		{
 			lattice.update();
 			try {
-				Thread.sleep(50);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

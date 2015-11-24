@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.List;
+import java.awt.Image;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -33,7 +34,7 @@ public class Lattice extends JPanel {
 		//tiles = new Tile[gridSize][];
 		tiles = new ArrayList<Tile>();
 		
-		boolean[][] occupied = new boolean[gridSize][];
+		occupied = new boolean[gridSize][];
 		for(int i=0; i<gridSize; i++)
 		{
 			boolean[] row = new boolean[gridSize];
@@ -102,7 +103,7 @@ public class Lattice extends JPanel {
 	public void paintComponent(Graphics g) {
         super.paintComponent(g); 
         
-        this.setBackground(Color.blue);
+        this.setBackground(Color.decode("#8e97ed"));
         int windowWidth = this.getWidth();
 		int windowHeight = this.getHeight();
 		
@@ -110,8 +111,20 @@ public class Lattice extends JPanel {
 		int tileHeight = windowHeight / gridSize;
 
 		for (Tile tile : tiles) {
-			g.setColor(tile.getColor());
-			g.fillRect(tile.getX()*tileWidth, tile.getY()*tileHeight, tileWidth, tileHeight);
+			g.drawImage(
+					tile.getImage(),
+					tile.getX()*tileWidth,
+					tile.getY()*tileHeight,
+					tileWidth,
+					tileHeight, 
+					new ImageObserver() {
+				
+				@Override
+				public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+					// TODO Auto-generated method stub
+					return false;
+				}
+			});
 		}
 				
 

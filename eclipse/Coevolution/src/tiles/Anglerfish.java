@@ -1,17 +1,22 @@
 package tiles;
 
 import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Anglerfish extends Tile {
 
 	public Anglerfish(int x, int y) {
 		super(x, y);
-		// TODO Auto-generated constructor stub
-	}
-	
-	@Override
-	public Color getColor() {
-		return Color.red;
+		
+		try {
+			tileImage = ImageIO.read(new File("resources/anglerfish.png"));
+		} catch (IOException e) {
+		}
 	}
 
 }

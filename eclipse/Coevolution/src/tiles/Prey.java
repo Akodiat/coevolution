@@ -1,8 +1,15 @@
 package tiles;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 public class Prey extends Tile {
 	private int speedX, speedY;
@@ -19,12 +26,35 @@ public class Prey extends Tile {
 		
 		speedX = random.nextInt()%2==0 ? 1 : -1;
 		speedY = random.nextInt()%2==0 ? 1 : -1;
+		
+		try {
+			tileImage = ImageIO.read(new File("resources/fish.png"));
+		} catch (IOException e) {
+		}
+		rotateImage();
 	}
 	
-	@Override
-	public Color getColor() {
-		return Color.white;
+	private void rotateImage() {
+	    double angle =  (speedX != 0 ? Math.atan(speedY/speedX) : (Math.PI * speedY));
+
+	    int srcWidth = tileImage.getWidth();
+	    int srcHeight = tileImage.getHeight();
+
+	    double sin = Math.abs(Math.sin(angle));
+	    double cos = Math.abs(Math.cos(angle));
+	    int newWidth = (int) Math.floor(srcWidth * cos + srcHeight * sin);
+	    int newHeight = (int) Math.floor(srcHeight * cos + srcWidth * sin);
+
+	    BufferedImage result = new BufferedImage(newWidth, newHeight,
+	    		tileImage.getType());
+	    Graphics2D g = result.createGraphics();
+	    g.translate((newWidth - srcWidth) / 2, (newHeight - srcHeight) / 2);
+	    g.rotate(angle, srcWidth / 2, srcHeight / 2);
+	    g.drawRenderedImage(tileImage, null);
+	    
+	    tileImage = result;
 	}
+
 	
 	public void move()
 	{
@@ -56,6 +86,7 @@ public class Prey extends Tile {
 			{
 				speedX = x-a.x;
 				speedY = y-a.y;
+				rotateImage();
 				return false;
 			}
 		}

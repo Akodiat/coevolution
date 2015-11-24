@@ -1,19 +1,30 @@
 package tiles;
 
-import java.awt.Color;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Tile {
 	protected int x;
 	protected int y;
+	protected BufferedImage tileImage;
 	
 	public Tile(int x, int y){
 		this.x = x;
 		this.y = y;
+		
+		try {
+			tileImage = ImageIO.read(new File("default.jpg"));
+		} catch (IOException e) {
+		}
 	}
 	
-	public Color getColor()
+	public Image getImage()
 	{
-		return Color.blue;
+		return tileImage;
 	}
 
 	public int getX() {
