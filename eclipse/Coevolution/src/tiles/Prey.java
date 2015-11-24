@@ -35,21 +35,16 @@ public class Prey extends Tile {
 	}
 	
 	private void rotateImage() {
-	    double angle =  (speedX != 0 ? Math.atan(speedY/speedX) : (Math.PI * speedY));
+	    double angle = -Math.PI + (speedX != 0 ? Math.atan(speedY/speedX) : (Math.PI * speedY));
 
-	    int srcWidth = tileImage.getWidth();
-	    int srcHeight = tileImage.getHeight();
+	    int w = tileImage.getWidth();
+	    int h = tileImage.getHeight();
 
-	    double sin = Math.abs(Math.sin(angle));
-	    double cos = Math.abs(Math.cos(angle));
-	    int newWidth = (int) Math.floor(srcWidth * cos + srcHeight * sin);
-	    int newHeight = (int) Math.floor(srcHeight * cos + srcWidth * sin);
 
-	    BufferedImage result = new BufferedImage(newWidth, newHeight,
-	    		tileImage.getType());
+	    BufferedImage result = new BufferedImage(w, h, tileImage.getType());
 	    Graphics2D g = result.createGraphics();
-	    g.translate((newWidth - srcWidth) / 2, (newHeight - srcHeight) / 2);
-	    g.rotate(angle, srcWidth / 2, srcHeight / 2);
+	    g.translate((w - w) / 2, (h - h) / 2);
+	    g.rotate(angle, w / 2, h / 2);
 	    g.drawRenderedImage(tileImage, null);
 	    
 	    tileImage = result;
