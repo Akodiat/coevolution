@@ -23,9 +23,9 @@ public class Prey extends Tile {
 		this.caution = caution;
 		this.gridSize = gridSize;
 		this.anglerfishes = anglerfishes;
-		
-		speedX = random.nextInt()%2==0 ? 1 : -1;
-		speedY = random.nextInt()%2==0 ? 1 : -1;
+        
+        speedX = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
+        speedY = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
 		
 		try {
 			tileImage = ImageIO.read(new File("resources/fish.png"));
