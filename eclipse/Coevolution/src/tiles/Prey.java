@@ -16,13 +16,15 @@ public class Prey extends Tile {
 	private int gridSize;
 	private double caution;
 	private ArrayList<Anglerfish> anglerfishes;
+	private ArrayList<FoodTile> food;
 	private Random random = new Random();
 	
-	public Prey(int x, int y, double caution, int gridSize, ArrayList<Anglerfish> anglerfishes) {
+	public Prey(int x, int y, double caution, int gridSize, ArrayList<Anglerfish> anglerfishes, ArrayList<FoodTile> food) {
 		super(x, y);
 		this.caution = caution;
 		this.gridSize = gridSize;
 		this.anglerfishes = anglerfishes;
+		this.food = food;
         
         speedX = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
         speedY = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
@@ -35,15 +37,31 @@ public class Prey extends Tile {
 	}
 	
 	private void rotateImage() {
-	    double angle = -Math.PI + (speedX != 0 ? Math.atan(speedY/speedX) : (Math.PI * speedY));
-
+	    double angle = Math.PI;;
+	    if(speedX == 0)
+	    	angle = (Math.PI/2 * speedY);
+	    else if(speedY == 0)
+	    	angle = speedX == 1 ? 0 : Math.PI;
+	    else if(speedX == 1 && speedY == 1)
+	    	angle = Math.PI/4;
+	    else if(speedX == -1 && speedY == 1)
+	    	angle = 3*Math.PI/4;
+	    else if(speedX == -1 && speedY == -1)
+	    	angle = -3*Math.PI/4;
+	    else if(speedX == 1 && speedY == -1)
+	    	angle = -Math.PI/4;
+	    
+	    angle += Math.PI/2;
+	    try {
+			tileImage = ImageIO.read(new File("resources/fish.png"));
+		} catch (IOException e) {
+		}
+	    
 	    int w = tileImage.getWidth();
 	    int h = tileImage.getHeight();
 
-
 	    BufferedImage result = new BufferedImage(w, h, tileImage.getType());
 	    Graphics2D g = result.createGraphics();
-	    g.translate((w - w) / 2, (h - h) / 2);
 	    g.rotate(angle, w / 2, h / 2);
 	    g.drawRenderedImage(tileImage, null);
 	    
@@ -65,9 +83,24 @@ public class Prey extends Tile {
 		
 		x %= gridSize;
 		y %= gridSize;
+		
+		tryEat();
 	}
 	
-	public Boolean isNeigbourhoodSafe()
+	private void tryEat()
+	{
+		for(int i=0; i<food.size(); i++)
+		{
+			FoodTile f = food.get(i);
+			if(f.x == x && f.y == y)
+			{
+				food.remove(i);
+				return;
+			}
+		}
+	}
+	
+	private Boolean isNeigbourhoodSafe()
 	{
 		int xPlus1 =  (x+1) % gridSize;
 		int yPlus1 =  (y+1) % gridSize;

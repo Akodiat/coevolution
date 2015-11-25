@@ -16,7 +16,8 @@ public class Lattice extends JPanel {
 
 	private int gridSize;
 	private boolean[][] occupied;
-	private ArrayList<Tile> tiles;
+	private ArrayList<FoodTile> food;
+	private ArrayList<Anglerfish> anglerfishes;
 	private PreyPopulation preyPopulation;
 	
 	private static final long serialVersionUID = 1L;
@@ -32,7 +33,6 @@ public class Lattice extends JPanel {
 		this.gridSize = gridSize;
 		
 		//tiles = new Tile[gridSize][];
-		tiles = new ArrayList<Tile>();
 		
 		occupied = new boolean[gridSize][];
 		for(int i=0; i<gridSize; i++)
@@ -46,6 +46,7 @@ public class Lattice extends JPanel {
 		int nTiles = (int) Math.pow(gridSize, 2);
 		int nAnglerFish = (int) (angerFishPercentage * nTiles);
 		
+		food = new ArrayList<FoodTile>();
 		int nFood = (int) (foodPercentage * nTiles);
 		while(nFood > 0)
 		{
@@ -53,13 +54,12 @@ public class Lattice extends JPanel {
 			int j = random.nextInt(gridSize);
 			
 			if(!occupied[i][j]){
-				tiles.add(new FoodTile(i, j));
+				food.add(new FoodTile(i, j));
 				occupied[i][j] = true;
 				nFood--;
 			}
 		}
-		
-		ArrayList<Anglerfish> anglerFishes = new ArrayList<Anglerfish>();
+		anglerfishes = new ArrayList<Anglerfish>();
 		while(nAnglerFish > 0)
 		{
 			int i = random.nextInt(gridSize);
@@ -68,8 +68,7 @@ public class Lattice extends JPanel {
 			if(!occupied[i][j]){
 				Anglerfish f = new Anglerfish(i, j); 
 				occupied[i][j] = true;
-				tiles.add(f);
-				anglerFishes.add(f);
+				anglerfishes.add(f);
 				
 				nAnglerFish--;
 			}
@@ -84,12 +83,15 @@ public class Lattice extends JPanel {
 			double caution = random.nextDouble();
 
 			if(!occupied[i][j]){
-				Prey p = new Prey(i, j, caution, gridSize, anglerFishes);
+				Prey p = new Prey(i, j, caution, gridSize, anglerfishes, food);
 				occupied[i][j] = true;
-				tiles.add(p);
 				preyPopulation.addPrey(p);
 				preyPopulationSize--;
 			}
+		}
+		
+		for (Anglerfish anglerfish : anglerfishes) {
+			anglerfish.addPrey(preyPopulation.getList());
 		}
 	}
 	
@@ -110,6 +112,10 @@ public class Lattice extends JPanel {
 		int tileWidth = windowWidth / gridSize;
 		int tileHeight = windowHeight / gridSize;
 
+		ArrayList<Tile> tiles = new ArrayList<>(food);
+		tiles.addAll(anglerfishes);
+		tiles.addAll(preyPopulation.getList());
+		
 		for (Tile tile : tiles) {
 			g.drawImage(
 					tile.getImage(),

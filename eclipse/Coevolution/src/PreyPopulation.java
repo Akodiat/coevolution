@@ -8,8 +8,8 @@ import javax.swing.JFrame;
 import tiles.Prey;
 
 public class PreyPopulation {
-	ArrayList<Prey> population;
-	Random random = new Random();
+	private ArrayList<Prey> population;
+	private Random random = new Random();
 	
 	public PreyPopulation(int populationSize){
 		population = new ArrayList<Prey>();
@@ -18,6 +18,11 @@ public class PreyPopulation {
 	public void addPrey(Prey p)
 	{
 		population.add(p);
+	}
+	
+	public ArrayList<Prey> getList()
+	{
+		return population;
 	}
 	
 	public void movePopulation(){
