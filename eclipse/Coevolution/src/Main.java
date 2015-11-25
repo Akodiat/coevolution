@@ -2,10 +2,11 @@ import javax.swing.JFrame;
 
 public class Main {
 
-	private static int latticeSize 			= 20;
-	private static double angerFishPercentage 	= 0.02;
-	private static double foodPercentage 		= 0.6;
-	private static int preyPopulationSize		= 25;
+	private static int 		latticeSize 		= 20;
+	private static double 	angerFishPercentage	= 0.02;
+	private static double 	foodPercentage 		= 0.6;
+	private static int 		preyPopulationSize	= 25;
+	private static int		sleepInterval		= 50;
 	
 	public static void main(String[] args) {
 		openWindow();
@@ -24,7 +25,7 @@ public class Main {
 		{
 			lattice.update();
 			try {
-				Thread.sleep(50);
+				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
