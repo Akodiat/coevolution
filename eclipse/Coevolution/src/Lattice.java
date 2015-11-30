@@ -18,7 +18,7 @@ public class Lattice extends JPanel {
 	private boolean[][] occupied;
 	private ArrayList<FoodTile> food;
 	private ArrayList<Anglerfish> anglerfishes;
-	private PreyPopulation preyPopulation;
+	private ArrayList<Prey> preyPopulation;
 	
 	private static final long serialVersionUID = 1L;
 	private Random random = new Random();
@@ -47,6 +47,9 @@ public class Lattice extends JPanel {
 		int nAnglerFish = (int) (angerFishPercentage * nTiles);
 		
 		food = new ArrayList<FoodTile>();
+		anglerfishes = new ArrayList<Anglerfish>();
+		preyPopulation = new ArrayList<Prey>();
+		
 		int nFood = (int) (foodPercentage * nTiles);
 		while(nFood > 0)
 		{
@@ -59,14 +62,14 @@ public class Lattice extends JPanel {
 				nFood--;
 			}
 		}
-		anglerfishes = new ArrayList<Anglerfish>();
+
 		while(nAnglerFish > 0)
 		{
 			int i = random.nextInt(gridSize);
 			int j = random.nextInt(gridSize);
 			 
 			if(!occupied[i][j]){
-				Anglerfish f = new Anglerfish(i, j); 
+				Anglerfish f = new Anglerfish(i, j, preyPopulation); 
 				occupied[i][j] = true;
 				anglerfishes.add(f);
 				
@@ -74,7 +77,6 @@ public class Lattice extends JPanel {
 			}
 		}
 		
-		preyPopulation = new PreyPopulation(preyPopulationSize);
 		while(preyPopulationSize > 0)
 		{
 			int i = random.nextInt(gridSize);
@@ -83,20 +85,24 @@ public class Lattice extends JPanel {
 			double caution = random.nextDouble();
 
 			if(!occupied[i][j]){
-				Prey p = new Prey(i, j, caution, gridSize, anglerfishes, food);
+				Prey p = new Prey(i, j, caution, gridSize, 
+						anglerfishes, food, preyPopulation);
 				occupied[i][j] = true;
-				preyPopulation.addPrey(p);
+				preyPopulation.add(p);
 				preyPopulationSize--;
 			}
-		}
-		
-		for (Anglerfish anglerfish : anglerfishes) {
-			anglerfish.addPrey(preyPopulation.getList());
 		}
 	}
 	
 	public void update(){
-		preyPopulation.movePopulation();
+		// Use shallow copy of list to allow prey to remove
+		// themselves from the actual list if they die.
+		ArrayList<Prey> preyPopCopy = (ArrayList<Prey>) 
+				preyPopulation.clone();
+		
+		for (Prey prey : preyPopCopy) {
+			prey.move();
+		}
 		this.revalidate();
 		this.invalidate();
 		this.repaint();
@@ -114,7 +120,7 @@ public class Lattice extends JPanel {
 
 		ArrayList<Tile> tiles = new ArrayList<>(food);
 		tiles.addAll(anglerfishes);
-		tiles.addAll(preyPopulation.getList());
+		tiles.addAll(preyPopulation);
 		
 		for (Tile tile : tiles) {
 			g.drawImage(

@@ -10,19 +10,36 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Prey extends Tile {
+	public static double reproductionFoodLevel = 3;
+	public static double initialFoodLevel = 3;
+	public static double foodNeededForMove = 0.1;
+	public static double cautionMutationSpan = 0.01;
+	
 	private int speedX, speedY;
 	private int gridSize;
 	private double caution;
+	private double food;
 	private ArrayList<Anglerfish> anglerfishes;
-	private ArrayList<FoodTile> food;
+	private ArrayList<FoodTile> foodTiles;
+	private ArrayList<Prey> school;
 	private Random random = new Random();
 	
-	public Prey(int x, int y, double caution, int gridSize, ArrayList<Anglerfish> anglerfishes, ArrayList<FoodTile> food) {
+	public Prey(
+			int x,
+			int y,
+			double caution,
+			int gridSize,
+			ArrayList<Anglerfish> anglerfishes,
+			ArrayList<FoodTile> foodTiles,
+			ArrayList<Prey> school) 
+	{
 		super(x, y);
 		this.caution = caution;
 		this.gridSize = gridSize;
 		this.anglerfishes = anglerfishes;
-		this.food = food;
+		this.foodTiles = foodTiles;
+		this.school = school;
+		this.food = initialFoodLevel;
         
         speedX = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
         speedY = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
@@ -69,6 +86,9 @@ public class Prey extends Tile {
 	
 	public void move()
 	{
+		if(food <= 0)
+			die();
+		
 		double rand = random.nextDouble();
 		if(caution < rand) {
 			isNeigbourhoodSafe();
@@ -82,17 +102,38 @@ public class Prey extends Tile {
 		x %= gridSize;
 		y %= gridSize;
 		
-		tryEat();
+		if(food < reproductionFoodLevel)
+			tryEat();
+		else
+			reproduce();
+		
+		food -= foodNeededForMove;
+	}
+	private void die()
+	{
+		school.remove(this);
+	}
+	private void reproduce()
+	{
+		food = 0;
+		
+		double c = cautionMutationSpan;
+		
+		double mutatedCaution = caution + (c*2*random.nextDouble())-c;
+		
+		Prey child = new Prey(x,y,mutatedCaution,gridSize,anglerfishes,foodTiles,school);
+		
+		school.add(child);
 	}
 	
 	private void tryEat()
 	{
-		for(int i=0; i<food.size(); i++)
+		for(int i=0; i<foodTiles.size(); i++)
 		{
-			FoodTile f = food.get(i);
+			FoodTile f = foodTiles.get(i);
 			if(f.x == x && f.y == y)
 			{
-				food.remove(i);
+				foodTiles.remove(i);
 				return;
 			}
 		}

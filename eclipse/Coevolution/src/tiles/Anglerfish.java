@@ -10,19 +10,16 @@ public class Anglerfish extends Tile {
 
 	private ArrayList<Prey> prey;
 	
-	public Anglerfish(int x, int y) {
+	public Anglerfish(int x, int y, ArrayList<Prey> prey) {
 		super(x, y);
+		
+		this.prey = prey;
 		
 		try {
 			tileImage = ImageIO.read(new File("resources/anglerfish.png"));
 		} catch (IOException e) {
 		}
 
-	}
-	
-	public void addPrey(ArrayList<Prey> prey)
-	{		
-		this.prey = prey;
 	}
 	
 	public void checkForPrey()
