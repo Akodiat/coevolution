@@ -1,16 +1,11 @@
 
 
 import java.util.ArrayList;
-import java.util.Random;
-
-import javax.swing.JFrame;
 
 import tiles.Prey;
 
 public class PreyPopulation {
 	private ArrayList<Prey> population;
-	private Random random = new Random();
-	
 	public PreyPopulation(int populationSize){
 		population = new ArrayList<Prey>();
 	}
