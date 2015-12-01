@@ -42,7 +42,7 @@ public class Prey extends Tile {
 		this.school = school;
 		this.food = reproductionFoodLevel / 2;
         
-		// Random direction
+		direction = 2*Math.PI*(random.nextInt(7))/8;
 		
 		try {
 			tileImage = ImageIO.read(new File("resources/fish.png"));
