@@ -132,6 +132,11 @@ public class Prey extends Tile {
 		
 		double mutatedCaution = caution + (c*2*random.nextDouble())-c;
 		
+		if(mutatedCaution>1)
+			mutatedCaution = 1;
+		else if(mutatedCaution<0)
+			mutatedCaution = 0;
+		
 		Prey child = new Prey(x,y,mutatedCaution,gridSize,anglerfishes,foodTiles,school);
 		
 		school.add(child);
@@ -145,6 +150,7 @@ public class Prey extends Tile {
 			if(f.x == x && f.y == y)
 			{
 				foodTiles.remove(i);
+				food++;
 				return;
 			}
 		}
