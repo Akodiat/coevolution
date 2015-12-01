@@ -1,5 +1,7 @@
 package tiles;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,8 +13,7 @@ import javax.imageio.ImageIO;
 
 public class Prey extends Tile {
 	public static double reproductionFoodLevel = 3;
-	public static double initialFoodLevel = 3;
-	public static double foodNeededForMove = 0.1;
+	public static double foodNeededForMove = 0.01;
 	public static double cautionMutationSpan = 0.01;
 	
 	private int speedX, speedY;
@@ -39,7 +40,7 @@ public class Prey extends Tile {
 		this.anglerfishes = anglerfishes;
 		this.foodTiles = foodTiles;
 		this.school = school;
-		this.food = initialFoodLevel;
+		this.food = reproductionFoodLevel / 2;
         
         speedX = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
         speedY = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
@@ -78,7 +79,16 @@ public class Prey extends Tile {
 	    BufferedImage result = new BufferedImage(w, h, tileImage.getType());
 	    Graphics2D g = result.createGraphics();
 	    g.rotate(angle, w / 2, h / 2);
+	    
+	    Color color = new Color(178,34,34,(int) (caution*255));
 	    g.drawRenderedImage(tileImage, null);
+	    g.setColor(color);
+	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.75f));
+	    g.fillRect(0, 0, w, h);
+	    
+	    g.drawRenderedImage(tileImage, null);
+	    
+	    
 	    
 	    tileImage = result;
 	}
@@ -115,7 +125,7 @@ public class Prey extends Tile {
 	}
 	private void reproduce()
 	{
-		food = 0;
+		food -= reproductionFoodLevel / 2;
 		
 		double c = cautionMutationSpan;
 		
