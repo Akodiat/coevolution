@@ -17,7 +17,7 @@ public class Main {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Lattice lattice = new Lattice(latticeSize, angerFishPercentage, foodPercentage, preyPopulationSize);
         f.add(lattice);
-        f.setSize(250,250);
+        f.setSize(800,800);
         f.setVisible(true);	
         
 		int nIterations = 10000;
