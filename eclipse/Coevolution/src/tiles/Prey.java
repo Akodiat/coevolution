@@ -16,10 +16,10 @@ public class Prey extends Tile {
 	public static double foodNeededForMove = 0.01;
 	public static double cautionMutationSpan = 0.01;
 	
-	private int speedX, speedY;
 	private int gridSize;
 	private double caution;
 	private double food;
+	private double direction;
 	private LinkedList<Anglerfish> anglerfishes;
 	private LinkedList<FoodTile> foodTiles;
 	private LinkedList<Prey> school;
@@ -42,8 +42,7 @@ public class Prey extends Tile {
 		this.school = school;
 		this.food = reproductionFoodLevel / 2;
         
-        speedX = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
-        speedY = random.nextInt()%3==0 ? 1 : (random.nextInt()%2==0 ? 0 : -1);
+		// Random direction
 		
 		try {
 			tileImage = ImageIO.read(new File("resources/fish.png"));
@@ -53,21 +52,8 @@ public class Prey extends Tile {
 	}
 	
 	private void rotateImage() {
-	    double angle = Math.PI;;
-	    if(speedX == 0)
-	    	angle = (Math.PI/2 * speedY);
-	    else if(speedY == 0)
-	    	angle = speedX == 1 ? 0 : Math.PI;
-	    else if(speedX == 1 && speedY == 1)
-	    	angle = Math.PI/4;
-	    else if(speedX == -1 && speedY == 1)
-	    	angle = 3*Math.PI/4;
-	    else if(speedX == -1 && speedY == -1)
-	    	angle = -3*Math.PI/4;
-	    else if(speedX == 1 && speedY == -1)
-	    	angle = -Math.PI/4;
+	    double angle = direction + Math.PI/2;
 	    
-	    angle += Math.PI/2;
 	    try {
 			tileImage = ImageIO.read(new File("resources/fish.png"));
 		} catch (IOException e) {
@@ -107,9 +93,20 @@ public class Prey extends Tile {
 			isNeigbourhoodSafe();
 			return;
 		}
-		else{
-			x += speedX;
-			y += speedY;
+		else{	
+			
+			rand = random.nextDouble();
+			if (rand < 0.25 ){
+				direction -= Math.PI/4;
+				rotateImage();
+			}
+			else if (rand > 0.75){
+				direction += Math.PI/4;
+				rotateImage();
+			}
+			
+			x += Math.signum(Math.cos(direction));
+			y += Math.signum(Math.sin(direction));
 		}
 		
 		x %= gridSize;
@@ -168,8 +165,8 @@ public class Prey extends Tile {
 			(a.x == xPlus1 || a.x == x || a.x == xMinus1) && 
 			(a.y == yPlus1 || a.y == y || a.y == yMinus1))
 			{
-				speedX = x-a.x;
-				speedY = y-a.y;
+				direction += Math.PI;
+				direction %= 2*Math.PI;
 				rotateImage();
 				return false;
 			}
