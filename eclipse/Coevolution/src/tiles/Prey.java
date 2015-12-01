@@ -66,15 +66,18 @@ public class Prey extends Tile {
 	    Graphics2D g = result.createGraphics();
 	    g.rotate(angle, w / 2, h / 2);
 	    
-	    Color color = new Color(178,34,34,(int) (caution*255));
+	    Color color = new Color(
+	    		(int) (caution*255), 		// R
+	    		100,						// G
+	    		(int) ((1-caution)*255),	// B
+	    		255							// A
+	    );
 	    g.drawRenderedImage(tileImage, null);
 	    g.setColor(color);
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.75f));
 	    g.fillRect(0, 0, w, h);
 	    
 	    g.drawRenderedImage(tileImage, null);
-	    
-	    
 	    
 	    tileImage = result;
 	    
