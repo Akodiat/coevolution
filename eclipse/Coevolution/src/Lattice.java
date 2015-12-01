@@ -103,6 +103,10 @@ public class Lattice extends JPanel {
 		for (Prey prey : preyPopCopy) {
 			prey.move();
 		}
+		
+		for (Anglerfish a : anglerfishes) {
+			a.checkForPrey();
+		}
 		this.revalidate();
 		this.invalidate();
 		this.repaint();
