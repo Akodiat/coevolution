@@ -99,6 +99,8 @@ public class Prey extends Tile {
 	{
 		if(food <= 0)
 			die();
+
+		food -= foodNeededForMove;
 		
 		double rand = random.nextDouble();
 		if(caution < rand) {
@@ -117,8 +119,6 @@ public class Prey extends Tile {
 			tryEat();
 		else
 			reproduce();
-		
-		food -= foodNeededForMove;
 	}
 	private void die()
 	{
