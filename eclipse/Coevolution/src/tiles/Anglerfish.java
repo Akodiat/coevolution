@@ -24,7 +24,7 @@ public class Anglerfish extends Tile {
 	
 	public void checkForPrey()
 	{
-		for(int i=0; i<prey.size(); i++)
+		for(int i=prey.size()-1; i >= 0; i--)
 		{
 			Prey p = prey.get(i);
 			if(p.x == x && p.y == y)

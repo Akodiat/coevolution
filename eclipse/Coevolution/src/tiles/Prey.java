@@ -91,6 +91,7 @@ public class Prey extends Tile {
 	    
 	    
 	    tileImage = result;
+	    
 	}
 
 	

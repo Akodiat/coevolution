@@ -118,7 +118,7 @@ public class Lattice extends JPanel {
 		int tileWidth = windowWidth / gridSize;
 		int tileHeight = windowHeight / gridSize;
 
-		ArrayList<Tile> tiles = new ArrayList<>(food);
+		ArrayList<Tile> tiles = new ArrayList<Tile>(food);
 		tiles.addAll(anglerfishes);
 		tiles.addAll(preyPopulation);
 		
