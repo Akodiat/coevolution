@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
@@ -20,9 +20,9 @@ public class Prey extends Tile {
 	private int gridSize;
 	private double caution;
 	private double food;
-	private ArrayList<Anglerfish> anglerfishes;
-	private ArrayList<FoodTile> foodTiles;
-	private ArrayList<Prey> school;
+	private LinkedList<Anglerfish> anglerfishes;
+	private LinkedList<FoodTile> foodTiles;
+	private LinkedList<Prey> school;
 	private Random random = new Random();
 	
 	public Prey(
@@ -30,9 +30,9 @@ public class Prey extends Tile {
 			int y,
 			double caution,
 			int gridSize,
-			ArrayList<Anglerfish> anglerfishes,
-			ArrayList<FoodTile> foodTiles,
-			ArrayList<Prey> school) 
+			LinkedList<Anglerfish> anglerfishes,
+			LinkedList<FoodTile> foodTiles,
+			LinkedList<Prey> school) 
 	{
 		super(x, y);
 		this.caution = caution;

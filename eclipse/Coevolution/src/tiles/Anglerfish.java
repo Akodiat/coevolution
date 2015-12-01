@@ -2,15 +2,15 @@ package tiles;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
 public class Anglerfish extends Tile {
 
-	private ArrayList<Prey> prey;
+	private LinkedList<Prey> prey;
 	
-	public Anglerfish(int x, int y, ArrayList<Prey> prey) {
+	public Anglerfish(int x, int y, LinkedList<Prey> prey) {
 		super(x, y);
 		
 		this.prey = prey;

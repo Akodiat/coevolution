@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.ImageObserver;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
 
 import javax.swing.JPanel;
@@ -16,9 +16,9 @@ public class Lattice extends JPanel {
 
 	private int gridSize;
 	private boolean[][] occupied;
-	private ArrayList<FoodTile> food;
-	private ArrayList<Anglerfish> anglerfishes;
-	private ArrayList<Prey> preyPopulation;
+	private LinkedList<FoodTile> food;
+	private LinkedList<Anglerfish> anglerfishes;
+	private LinkedList<Prey> preyPopulation;
 	
 	private static final long serialVersionUID = 1L;
 	private Random random = new Random();
@@ -46,9 +46,9 @@ public class Lattice extends JPanel {
 		int nTiles = (int) Math.pow(gridSize, 2);
 		int nAnglerFish = (int) (angerFishPercentage * nTiles);
 		
-		food = new ArrayList<FoodTile>();
-		anglerfishes = new ArrayList<Anglerfish>();
-		preyPopulation = new ArrayList<Prey>();
+		food = new LinkedList<FoodTile>();
+		anglerfishes = new LinkedList<Anglerfish>();
+		preyPopulation = new LinkedList<Prey>();
 		
 		int nFood = (int) (foodPercentage * nTiles);
 		while(nFood > 0)
@@ -97,7 +97,7 @@ public class Lattice extends JPanel {
 	public void update(){
 		// Use shallow copy of list to allow prey to remove
 		// themselves from the actual list if they die.
-		ArrayList<Prey> preyPopCopy = (ArrayList<Prey>) 
+		LinkedList<Prey> preyPopCopy = (LinkedList<Prey>) 
 				preyPopulation.clone();
 		
 		for (Prey prey : preyPopCopy) {
@@ -122,7 +122,7 @@ public class Lattice extends JPanel {
 		int tileWidth = windowWidth / gridSize;
 		int tileHeight = windowHeight / gridSize;
 
-		ArrayList<Tile> tiles = new ArrayList<Tile>(food);
+		LinkedList<Tile> tiles = new LinkedList<Tile>(food);
 		tiles.addAll(anglerfishes);
 		tiles.addAll(preyPopulation);
 		
