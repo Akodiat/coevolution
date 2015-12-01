@@ -109,8 +109,8 @@ public class Prey extends Tile {
 			y += Math.signum(Math.sin(direction));
 		}
 		
-		x %= gridSize;
-		y %= gridSize;
+		x = (x + gridSize) % gridSize;
+		y = (y + gridSize) % gridSize;
 		
 		if(food < reproductionFoodLevel)
 			tryEat();
