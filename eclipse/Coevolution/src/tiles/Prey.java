@@ -165,8 +165,15 @@ public class Prey extends Tile {
 			(a.x == xPlus1 || a.x == x || a.x == xMinus1) && 
 			(a.y == yPlus1 || a.y == y || a.y == yMinus1))
 			{
-				direction += Math.PI;
-				direction %= 2*Math.PI;
+				if (a.x-x == 0){
+					direction = (a.y-y > 0) ? 3*Math.PI/2 : Math.PI/2;
+				}
+				else
+				{
+					double angle = Math.atan((a.y-y)/(a.x-x));
+					direction = (angle > 0) ? angle + Math.PI : angle;
+					direction %= 2*Math.PI;
+				}
 				rotateImage();
 				return false;
 			}
