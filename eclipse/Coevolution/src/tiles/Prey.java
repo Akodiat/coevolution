@@ -183,5 +183,10 @@ public class Prey extends Tile {
 		}
 		return true;
 	}
+	
+	public double getCaution()
+	{
+		return caution;
+	}
 
 }
