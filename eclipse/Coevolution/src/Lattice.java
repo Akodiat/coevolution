@@ -101,20 +101,25 @@ public class Lattice extends JPanel {
 		// themselves from the actual list if they die.
 		LinkedList<Prey> preyPopCopy = (LinkedList<Prey>) 
 				preyPopulation.clone();
-		
+		double caution = 0;
 		for (Prey prey : preyPopCopy) {
+			caution += prey.getCaution();
 			prey.move();
 		}
+		
 		
 		for (Anglerfish a : anglerfishes) {
 			a.checkForPrey();
 		}
 		
-		if((food.size()/(double)(gridSize*gridSize)) < foodPercentage) {
-			int i = random.nextInt(gridSize);
-			int j = random.nextInt(gridSize);
-			food.add(new FoodTile(i, j));
+		for (int i = 0; i < 10; i++) {
+			if((food.size()/(double)(gridSize*gridSize)) < foodPercentage) {
+				int k = random.nextInt(gridSize);
+				int j = random.nextInt(gridSize);
+				food.add(new FoodTile(k, j));
+			}
 		}
+				
 		this.revalidate();
 		this.invalidate();
 		this.repaint();
