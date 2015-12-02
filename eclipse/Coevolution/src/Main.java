@@ -1,15 +1,21 @@
 import javax.swing.JFrame;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Main {
 
-	private static int 		latticeSize 		= 20;
-	private static double 	angerFishPercentage	= 0.02;
-	private static double 	foodPercentage 		= 0.6;
-	private static int 		preyPopulationSize	= 25;
+	private static int 		latticeSize 		= 40;
+	private static double 	angerFishPercentage	= 0.03;
+	private static double 	foodPercentage 		= 0.4;
+	private static int 		preyPopulationSize	= 100;
 	private static int		sleepInterval		= 50;
 	
 	public static void main(String[] args) {
 		openWindow();
+		System.out.println("Done!");
 	}
 	
 	private static void openWindow() {
@@ -19,17 +25,35 @@ public class Main {
         f.add(lattice);
         f.setSize(800,800);
         f.setVisible(true);	
-        
-		int nIterations = 10000;
-		while(nIterations-- > 0)
-		{
-			lattice.update();
-			try {
-				Thread.sleep(sleepInterval);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+        try {
+			File file = new File("testFile.txt");
+
+			// if file doesnt exists, then create it
+			if (!file.exists()) {
+				file.createNewFile();
 			}
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);			
+			
+			int nIterations = 2000;
+			while(nIterations-- > 0)
+			{
+				bw.write(String.valueOf(lattice.getAverageCaution()));
+				bw.newLine();
+				lattice.update();
+				try {
+					Thread.sleep(sleepInterval);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			bw.close();
+        } catch (IOException e) {
+			e.printStackTrace();
 		}
+        
 	}
 
 }
