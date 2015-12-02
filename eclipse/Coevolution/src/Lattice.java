@@ -15,6 +15,7 @@ import tiles.Tile;
 public class Lattice extends JPanel {
 
 	private int gridSize;
+	private double foodPercentage;
 	private boolean[][] occupied;
 	private LinkedList<FoodTile> food;
 	private LinkedList<Anglerfish> anglerfishes;
@@ -31,6 +32,7 @@ public class Lattice extends JPanel {
 			)
 	{
 		this.gridSize = gridSize;
+		this.foodPercentage = foodPercentage;
 		
 		//tiles = new Tile[gridSize][];
 		
@@ -106,6 +108,12 @@ public class Lattice extends JPanel {
 		
 		for (Anglerfish a : anglerfishes) {
 			a.checkForPrey();
+		}
+		
+		if((food.size()/(double)(gridSize*gridSize)) < foodPercentage) {
+			int i = random.nextInt(gridSize);
+			int j = random.nextInt(gridSize);
+			food.add(new FoodTile(i, j));
 		}
 		this.revalidate();
 		this.invalidate();
