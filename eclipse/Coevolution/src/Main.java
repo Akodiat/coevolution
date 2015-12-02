@@ -8,10 +8,12 @@ import java.io.IOException;
 public class Main {
 
 	private static int 		latticeSize 		= 40;
-	private static double 	angerFishPercentage	= 0.03;
+	private static double 	angerFishPercentage	= 0.001;
 	private static double 	foodPercentage 		= 0.4;
-	private static int 		preyPopulationSize	= 100;
+	private static int 		preyPopulationSize	= 250;
 	private static int		sleepInterval		= 50;
+	
+	private static boolean	enableVisualisation = false;
 	
 	public static void main(String[] args) {
 		openWindow();
@@ -21,7 +23,7 @@ public class Main {
 	private static void openWindow() {
 		JFrame f = new JFrame("Angler fish simulation");
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Lattice lattice = new Lattice(latticeSize, angerFishPercentage, foodPercentage, preyPopulationSize);
+        Lattice lattice = new Lattice(latticeSize, angerFishPercentage, foodPercentage, preyPopulationSize, enableVisualisation);
         f.add(lattice);
         f.setSize(800,800);
         f.setVisible(true);	
@@ -36,16 +38,18 @@ public class Main {
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);			
 			
-			int nIterations = 2000;
+			int nIterations = 5000;
 			while(nIterations-- > 0)
 			{
 				bw.write(String.valueOf(lattice.getAverageCaution()));
 				bw.newLine();
 				lattice.update();
-				try {
-					Thread.sleep(sleepInterval);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if (enableVisualisation) {
+					try {
+						Thread.sleep(sleepInterval);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			
