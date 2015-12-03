@@ -130,6 +130,11 @@ public class Lattice extends JPanel {
 		}
 	}
 	
+	public int getPreyPopulationSize()
+	{
+		return preyPopulation.size();
+	}
+	
 	public double getAverageCaution(){
 		double averageCaution = 0;
 		for (Prey prey : preyPopulation) {
