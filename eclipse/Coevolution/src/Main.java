@@ -11,19 +11,25 @@ import java.util.ArrayList;
 public class Main {
 
 	private static int latticeSize = 40;
-	private static double angerFishPercentage = 0.001;
+	private static double angerFishPercentage = 0.06;
 	private static double foodPercentage = 0.4;
-	private static int preyPopulationSize = 50;
+	private static int preyPopulationSize = 250;
 	private static int sleepInterval = 50;
-	private static int nIterations = 500;
+	private static int nIterations = 4000;
 
-	private static boolean enableVisualisation = false;
+	private static boolean enableVisualisation = true;
+	private static boolean saveAllData = false;
 
 	public static void main(String[] args) {
 		if (enableVisualisation)
 			openWindow();
-		else
-			collectData();
+		else{
+			if (saveAllData)
+				collectData();
+			else
+				collectDataEnd();
+		}
+			
 		System.out.println("Done!");
 	}
 
@@ -31,6 +37,8 @@ public class Main {
 		Plot2DPanel avgCautionPlot = new Plot2DPanel();
 		Plot2DPanel popSizePlot = new Plot2DPanel();
 		double[] afPercentage = { 0.001, 0.005, 0.01, 0.02, 0.03, 0.033, 0.035, 0.04, 0.05 };
+		
+		
 		for (int i = 0; i < afPercentage.length; i++) {
 			Lattice lattice = new Lattice(latticeSize, afPercentage[i], foodPercentage, preyPopulationSize,
 					enableVisualisation);
@@ -71,6 +79,48 @@ public class Main {
 		}
 		newPlotWindow(avgCautionPlot,"Average caution plot");
 		newPlotWindow(popSizePlot,"Population size plot");
+	}
+	
+	private static void collectDataEnd() {
+			//double[] afPercentage = {0.001, 0.005, 0.01, 0.0125, 0.015, 0.0175, 0.02, 0.0225, 0.025, 0.0275, 0.03, 0.033, 0.035, 0.04, 0.05};
+			double[] afPercentage = { 0.0275, 0.03, 0.033, 0.035 };
+			int iterations = 10;
+			try {
+				File file = new File("testFileEnd.txt");
+				
+				// if file doesnt exists, then create it
+				if (!file.exists()) {
+					file.createNewFile();
+				}
+
+				FileWriter fw = new FileWriter(file.getAbsoluteFile());
+				BufferedWriter bw = new BufferedWriter(fw);
+				
+				for (int i = 0; i < afPercentage.length; i++) {
+					double meanAverageCaution = 0;
+					
+					
+					for (int iter = 0; iter < iterations; iter++){
+						System.out.println("Running index " + i + " out of " + afPercentage.length + "(" + iter + ")");
+						Lattice lattice = new Lattice(latticeSize, afPercentage[i], foodPercentage, preyPopulationSize,
+								enableVisualisation);
+						double averageCaution = lattice.getAverageCaution();
+						for (int j = 0; j < nIterations; j++) {
+							lattice.update();
+							if(lattice.getAverageCaution() >0){
+								averageCaution = lattice.getAverageCaution();
+							}
+						}
+						meanAverageCaution += averageCaution;
+					}
+					System.out.println(meanAverageCaution + " : " + meanAverageCaution/iterations);
+					bw.write(String.valueOf(afPercentage[i]) + " " + String.valueOf(meanAverageCaution/iterations));
+					bw.newLine();
+				}
+				bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private static void newPlotWindow(Plot2DPanel plot, String desc) {
