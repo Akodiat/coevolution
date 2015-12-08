@@ -142,6 +142,10 @@ public class Lattice extends JPanel {
 		}
 		return averageCaution/preyPopulation.size();
 	}
+	public LinkedList<Prey> getPreyPopulation(){
+		return preyPopulation;
+	}
+	
 	
 	public void paintComponent(Graphics g) {
         super.paintComponent(g); 
