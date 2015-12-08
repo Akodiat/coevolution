@@ -46,39 +46,23 @@ public class Window extends JFrame {
 		
 		add(splitPane);
 		
-
-		splitPane.setDividerLocation(getWidth()/2);
+		splitPane.setResizeWeight(0.5);
 		setVisible(enableVisualisation);
 		
 		//ex1();
 	}
 
-	public void ex1() {
-		SwingWorker<Lattice, Void> worker = new SwingWorker<Lattice, Void>() {
-		    @Override
-		    public Lattice doInBackground() {
-				int nIterations = 500;
-				while (nIterations-- > 0) {
-					lattice.update();
-						try {
-							Thread.sleep(sleepInterval);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-				}
-				return lattice;
-		    }
-
-		    @Override
-		    public void done() {
-		    	lattice.revalidate();
-		    	lattice.invalidate();
-		    	lattice.repaint();
-		    }
-		};
-		worker.execute();
-		
-
+	public void ex1()
+	{
+		int nIterations = 500;
+		while (nIterations-- > 0) {
+			lattice.update();
+			try {
+				Thread.sleep(sleepInterval);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void collectSomething()
@@ -229,6 +213,8 @@ public class Window extends JFrame {
 		// Create and add CheckButton as a menu item to one of the drop down
 		// menu
 		JCheckBoxMenuItem checkAction = new JCheckBoxMenuItem("Check Action");
+		
+		JMenuItem ex1Action = new JMenuItem("Example 1");
 		// Create and add Radio Buttons as simple menu items to one of the drop
 		// down menu
 		JRadioButtonMenuItem radioAction1 = new JRadioButtonMenuItem("Radio Button1");
@@ -245,12 +231,33 @@ public class Window extends JFrame {
 		examplesMenu.addSeparator();
 		examplesMenu.add(radioAction1);
 		examplesMenu.add(radioAction2);
+		examplesMenu.add(ex1Action);
 		// Add a listener to the New menu item. actionPerformed() method will
 		// invoked, if user triggered this menu item
-		stepAction.addActionListener(new ActionListener() {
+		runAction.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("You have clicked on the new action");
-				ex1();
+				SwingWorker<Integer, Void> worker = new SwingWorker<Integer, Void>() {
+				    @Override
+				    public Integer doInBackground() {
+						ex1();
+						return 1;
+				    }
+				};
+				worker.execute();
+			}
+		});
+		ex1Action.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("You have clicked on the new action");
+				SwingWorker<Integer, Void> worker = new SwingWorker<Integer, Void>() {
+				    @Override
+				    public Integer doInBackground() {
+						ex1();
+						return 1;
+				    }
+				};
+				worker.execute();
 			}
 		});
 	}
