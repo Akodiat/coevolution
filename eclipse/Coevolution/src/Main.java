@@ -1,12 +1,19 @@
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 
 import org.math.plot.*;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Main {
 
@@ -134,7 +141,7 @@ public class Main {
 
 		JFrame f = new JFrame("Angler fish simulation");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		setupMenu(f);
 		Lattice lattice = new Lattice(latticeSize, angerFishPercentage, foodPercentage, preyPopulationSize,
 				enableVisualisation);
 
@@ -171,6 +178,53 @@ public class Main {
 			e.printStackTrace();
 		}
 
+	}
+	private static void setupMenu(JFrame f)
+	{
+		// Creates a menubar for a JFrame
+        JMenuBar menuBar = new JMenuBar();
+         
+        // Add the menubar to the frame
+        f.setJMenuBar(menuBar);
+         
+        // Define and add two drop down menu to the menubar
+        JMenu simulationMenu = new JMenu("Simulation");
+        JMenu examplesMenu = new JMenu("Example");
+        menuBar.add(simulationMenu);
+        menuBar.add(examplesMenu);
+         
+        // Create and add simple menu item to one of the drop down menu
+        JMenuItem stepAction = new JMenuItem("Step simulation");
+        JMenuItem runAction = new JMenuItem("Run simulation");
+         
+        // Create and add CheckButton as a menu item to one of the drop down
+        // menu
+        JCheckBoxMenuItem checkAction = new JCheckBoxMenuItem("Check Action");
+        // Create and add Radio Buttons as simple menu items to one of the drop
+        // down menu
+        JRadioButtonMenuItem radioAction1 = new JRadioButtonMenuItem(
+                "Radio Button1");
+        JRadioButtonMenuItem radioAction2 = new JRadioButtonMenuItem(
+                "Radio Button2");
+        // Create a ButtonGroup and add both radio Button to it. Only one radio
+        // button in a ButtonGroup can be selected at a time.
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(radioAction1);
+        bg.add(radioAction2);
+        simulationMenu.add(stepAction);
+        simulationMenu.add(runAction);
+        simulationMenu.add(checkAction);
+        simulationMenu.addSeparator();
+        examplesMenu.addSeparator();
+        examplesMenu.add(radioAction1);
+        examplesMenu.add(radioAction2);
+        // Add a listener to the New menu item. actionPerformed() method will
+        // invoked, if user triggered this menu item
+        stepAction.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                System.out.println("You have clicked on the new action");
+            }
+        });
 	}
 
 }
