@@ -8,11 +8,11 @@ import org.math.plot.Plot2DPanel;
 public class Window extends JFrame {
 	private static final long serialVersionUID = -7609923067531544108L;
 	private int latticeSize = 40;
-	private double angerFishPercentage = 0.06;
+	private double angerFishPercentage = 0.02;
 	private double foodPercentage = 0.4;
 	private int preyPopulationSize = 250;
 	private int sleepInterval = 50;
-	private int nIterations = 4000;
+	private int nIterations = 700;
 
 	private Dimension latticeDimension = new Dimension(400, 400);
 	private Dimension plotDimension = new Dimension(400, 300);;
@@ -54,9 +54,36 @@ public class Window extends JFrame {
 
 	public void ex1()
 	{
-		int nIterations = 500;
-		while (nIterations-- > 0) {
+		currentPlot.setAxisLabel(0, "Timestep t");
+		currentPlot.setAxisLabel(1, "Population size");
+		double[] preySizeValues = new double[nIterations];
+		double[] anglSizeValues = new double[nIterations];
+		double[] foodSizeValues = new double[nIterations];
+		double[] iterationValues = new double[nIterations];
+		
+		for (int i = 0; i < nIterations; i++) {
+			iterationValues[i] = nIterations;
+		}
+
+		currentPlot.addLinePlot("Prey", iterationValues, preySizeValues);
+		currentPlot.addLinePlot("Angler fish", iterationValues, anglSizeValues);
+		currentPlot.addLinePlot("Food fishes", iterationValues, foodSizeValues);
+		
+		for (int i = 0; i < nIterations; i++) {
 			lattice.update();
+			preySizeValues[i] = lattice.getPreyPopulationSize();
+			anglSizeValues[i] = lattice.getAnglerFishPopulationSize();
+			foodSizeValues[i] = lattice.getFoodSize();
+			iterationValues[i] = i;
+			
+			currentPlot.removeAllPlots();
+			currentPlot.addLinePlot("Prey", iterationValues, preySizeValues);
+			currentPlot.addLinePlot("Angler fish", iterationValues, anglSizeValues);
+			currentPlot.addLinePlot("Food fishes", iterationValues, foodSizeValues);
+			
+			currentPlot.invalidate();
+			currentPlot.revalidate();
+			currentPlot.repaint();
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {
