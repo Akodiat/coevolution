@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 public class Prey extends Tile {
 	public static double reproductionFoodLevel = 3;
@@ -17,9 +18,14 @@ public class Prey extends Tile {
 	public static double cautionMutationSpan = 0.01;
 	
 	private int gridSize;
-	private double caution;
 	private double food;
 	private double direction;
+	
+	private double maxMetabolism;
+	private double minMetabolism;
+	private double brainSize; 
+	private double c1;
+	private double c2;
 	private LinkedList<Anglerfish> anglerfishes;
 	private LinkedList<FoodTile> foodTiles;
 	private LinkedList<Prey> school;
@@ -28,19 +34,26 @@ public class Prey extends Tile {
 	public Prey(
 			int x,
 			int y,
-			double caution,
+			double brainSize,
+			double maxMetabolism,
+			double minMetabolism,
 			int gridSize,
 			LinkedList<Anglerfish> anglerfishes,
 			LinkedList<FoodTile> foodTiles,
 			LinkedList<Prey> school) 
 	{
 		super(x, y);
-		this.caution = caution;
+		this.brainSize = brainSize;
+		this.maxMetabolism = maxMetabolism;
+		this.minMetabolism = minMetabolism;
 		this.gridSize = gridSize;
 		this.anglerfishes = anglerfishes;
 		this.foodTiles = foodTiles;
 		this.school = school;
 		this.food = reproductionFoodLevel / 2;
+		
+		c1 = (minMetabolism * Math.E - maxMetabolism) / (Math.E - 1);
+		c2 = (maxMetabolism - minMetabolism) / (Math.E - 1);
         
 		direction = 2*Math.PI*(random.nextInt(7))/8;
 		
@@ -67,9 +80,9 @@ public class Prey extends Tile {
 	    g.rotate(angle, w / 2, h / 2);
 	    
 	    Color color = new Color(
-	    		(int) (caution*255), 		// R
+	    		(int) (brainSize*255), 		// R
 	    		100,						// G
-	    		(int) ((1-caution)*255),	// B
+	    		(int) ((1-brainSize)*255),	// B
 	    		255							// A
 	    );
 	    g.drawRenderedImage(tileImage, null);
@@ -82,6 +95,10 @@ public class Prey extends Tile {
 	    tileImage = result;
 	    
 	}
+	public double getBrainSize()
+	{
+		return brainSize;
+	}
 
 	
 	public void move()
@@ -92,25 +109,22 @@ public class Prey extends Tile {
 		food -= foodNeededForMove;
 		
 		double rand = random.nextDouble();
-		if(caution < rand) {
-			isNeigbourhoodSafe();
-			return;
-		}
-		else{	
-			
+		int lookForward = lookForward();
+		if(lookForward < 0) // Angler fish
+		{
 			rand = random.nextDouble();
-			if (rand < 0.25 ){
+			if (rand < 0.5 ){
 				direction -= Math.PI/4;
 				rotateImage();
 			}
-			else if (rand > 0.75){
+			else {
 				direction += Math.PI/4;
 				rotateImage();
 			}
-			
-			x += Math.signum(Math.cos(direction));
-			y += Math.signum(Math.sin(direction));
 		}
+		
+		x += Math.signum(Math.cos(direction));
+		y += Math.signum(Math.sin(direction));
 		
 		x = (x + gridSize) % gridSize;
 		y = (y + gridSize) % gridSize;
@@ -130,14 +144,13 @@ public class Prey extends Tile {
 		
 		double c = cautionMutationSpan;
 		
-		double mutatedCaution = caution + (c*2*random.nextDouble())-c;
+		double mutatedBrainSize = brainSize + (c*random.nextGaussian())-c;
+		if(mutatedBrainSize>1)
+			mutatedBrainSize = 1;
+		else if(mutatedBrainSize<0)
+			mutatedBrainSize = 0;
 		
-		if(mutatedCaution>1)
-			mutatedCaution = 1;
-		else if(mutatedCaution<0)
-			mutatedCaution = 0;
-		
-		Prey child = new Prey(x,y,mutatedCaution,gridSize,anglerfishes,foodTiles,school);
+		Prey child = new Prey(x,y,mutatedBrainSize,maxMetabolism,minMetabolism,gridSize,anglerfishes,foodTiles,school);
 		
 		school.add(child);
 	}
@@ -156,37 +169,53 @@ public class Prey extends Tile {
 		}
 	}
 	
-	private Boolean isNeigbourhoodSafe()
+	private double getMetabolism()
 	{
-		int xPlus1 =  (x+1) % gridSize;
-		int yPlus1 =  (y+1) % gridSize;
-		int xMinus1 = (x-1) % gridSize;
-		int yMinus1 = (y-1) % gridSize;
+		return c1 + c2 * Math.exp(brainSize);
+	}
+	/**
+	 * Looks forward and return what is there.
+	 * @return 0, if title in front is empty. 1, if it is food, -1 if it is an angler fish.
+	 */
+	private int lookForward()
+	{
+		double dx = Math.signum(Math.cos(direction));
+		double dy = Math.signum(Math.sin(direction));
 		
-		for (Anglerfish a : anglerfishes) {
-			if(
-			(a.x == xPlus1 || a.x == x || a.x == xMinus1) && 
-			(a.y == yPlus1 || a.y == y || a.y == yMinus1))
+		double xInFront = (x + dx + gridSize) % gridSize;
+		double yInFront = (y + dy + gridSize) % gridSize;
+		
+		// value==0 equals nothing in front of us.
+		int value = 0;
+		
+		// Check for angler fish
+		for (Anglerfish a : anglerfishes)
+			if(a.x == xInFront && a.y == yInFront)
 			{
-				if (a.x-x == 0){
-					direction = (a.y-y > 0) ? 3*Math.PI/2 : Math.PI/2;
-				}
-				else
-				{
-					double angle = Math.atan((a.y-y)/(a.x-x));
-					direction = (angle > 0) ? angle + Math.PI : angle;
-					direction %= 2*Math.PI;
-				}
-				rotateImage();
-				return false;
+				value = -1;
+				break;
 			}
-		}
-		return true;
+		// If we don't have a angler fish in front of us
+		if(value == 0)
+			// Check for food
+			for (FoodTile f : foodTiles)
+				if(f.x == xInFront && f.y == yInFront)
+				{
+					value = 1;
+					break;
+				}
+		
+		// If we fail to think correctly, be mistaken.
+		value *= thinksCorrectly() ? 1 : -1;
+
+		return value;
 	}
 	
-	public double getCaution()
+	public boolean thinksCorrectly()
 	{
-		return caution;
+		double probCorrect = 0.5 * (brainSize+1);
+		Random r = new Random();
+		return r.nextDouble() < probCorrect;
 	}
 
 }

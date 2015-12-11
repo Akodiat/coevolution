@@ -13,6 +13,9 @@ public class Window extends JFrame {
 	private int preyPopulationSize = 250;
 	private int sleepInterval = 50;
 	private int nIterations = 700;
+	
+	private double maxMetabolism = 0.1;
+	private double minMetabolism = 0.001;
 
 	private Dimension latticeDimension = new Dimension(400, 400);
 	private Dimension plotDimension = new Dimension(400, 300);;
@@ -34,7 +37,8 @@ public class Window extends JFrame {
 		lattice = new Lattice(
 				latticeSize, angerFishPercentage,
 				foodPercentage, preyPopulationSize,
-				enableVisualisation);
+				enableVisualisation, 
+				maxMetabolism, minMetabolism);
 		lattice.setPreferredSize(latticeDimension);
 
 		currentPlot = new Plot2DPanel();
@@ -107,7 +111,7 @@ public class Window extends JFrame {
 
 			int nIterations = 5000;
 			while (nIterations-- > 0) {
-				bw.write(String.valueOf(lattice.getAverageCaution()));
+				bw.write(String.valueOf(lattice.getAverageBrainSize()));
 				bw.newLine();
 				lattice.update();
 				if (enableVisualisation) {
@@ -132,7 +136,7 @@ public class Window extends JFrame {
 
 		for (int i = 0; i < afPercentage.length; i++) {
 			Lattice lattice = new Lattice(latticeSize, afPercentage[i], foodPercentage, preyPopulationSize,
-					enableVisualisation);
+					enableVisualisation,maxMetabolism,minMetabolism);
 
 			double[] iterationValues = new double[nIterations];
 			double[] avgCautionValues = new double[nIterations];
@@ -150,7 +154,7 @@ public class Window extends JFrame {
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write("Lattice size:" + latticeSize + "\nAnglerfish percentage:" + afPercentage[i]);
 				for (int j = 0; j < nIterations; j++) {
-					double averageCaution = lattice.getAverageCaution();
+					double averageCaution = lattice.getAverageBrainSize();
 					double popSizeValue = lattice.getPreyPopulationSize();
 					iterationValues[j] = j;
 					avgCautionValues[j] = Double.isNaN(averageCaution) ? 0 : averageCaution;
@@ -200,12 +204,12 @@ public class Window extends JFrame {
 				for (int iter = 0; iter < iterations; iter++) {
 					System.out.println("Running index " + i + " out of " + afPercentage.length + "(" + iter + ")");
 					Lattice lattice = new Lattice(latticeSize, afPercentage[i], foodPercentage, preyPopulationSize,
-							enableVisualisation);
-					double averageCaution = lattice.getAverageCaution();
+							enableVisualisation, maxMetabolism, minMetabolism);
+					double averageCaution = lattice.getAverageBrainSize();
 					for (int j = 0; j < nIterations; j++) {
 						lattice.update();
-						if (lattice.getAverageCaution() > 0) {
-							averageCaution = lattice.getAverageCaution();
+						if (lattice.getAverageBrainSize() > 0) {
+							averageCaution = lattice.getAverageBrainSize();
 						}
 					}
 					meanAverageCaution += averageCaution;

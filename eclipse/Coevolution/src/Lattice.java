@@ -30,7 +30,9 @@ public class Lattice extends JPanel {
 			double angerFishPercentage,
 			double foodPercentage,
 			int preyPopulationSize,
-			boolean enableVisualisation
+			boolean enableVisualisation,
+			double maxMetabolism,
+			double minMetabolism
 			)
 	{
 		this.gridSize = gridSize;
@@ -87,11 +89,12 @@ public class Lattice extends JPanel {
 			int i = random.nextInt(gridSize);
 			int j = random.nextInt(gridSize);
 			
-			double caution = random.nextDouble();
+			double brainSize = random.nextDouble();
 
 			if(!occupied[i][j]){
-				Prey p = new Prey(i, j, caution, gridSize, 
-						anglerfishes, food, preyPopulation);
+				Prey p = new Prey(i, j, brainSize, maxMetabolism, 
+						minMetabolism, gridSize, anglerfishes, 
+						food, preyPopulation);
 				occupied[i][j] = true;
 				preyPopulation.add(p);
 				preyPopulationSize--;
@@ -102,15 +105,13 @@ public class Lattice extends JPanel {
 	public void update(){
 		// Use shallow copy of list to allow prey to remove
 		// themselves from the actual list if they die.
+		@SuppressWarnings("unchecked")
 		LinkedList<Prey> preyPopCopy = (LinkedList<Prey>) 
 				preyPopulation.clone();
-		double caution = 0;
 		for (Prey prey : preyPopCopy) {
-			caution += prey.getCaution();
 			prey.move();
 		}
-		
-		
+				
 		for (Anglerfish a : anglerfishes) {
 			a.checkForPrey();
 		}
@@ -143,12 +144,12 @@ public class Lattice extends JPanel {
 		return anglerfishes.size();
 	}
 	
-	public double getAverageCaution(){
-		double averageCaution = 0;
+	public double getAverageBrainSize(){
+		double averageBrainSize = 0;
 		for (Prey prey : preyPopulation) {
-			averageCaution += prey.getCaution();
+			averageBrainSize += prey.getBrainSize();
 		}
-		return averageCaution/preyPopulation.size();
+		return averageBrainSize/preyPopulation.size();
 	}
 	public LinkedList<Prey> getPreyPopulation(){
 		return preyPopulation;
