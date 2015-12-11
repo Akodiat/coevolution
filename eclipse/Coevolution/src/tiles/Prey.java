@@ -10,11 +10,9 @@ import java.util.LinkedList;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 public class Prey extends Tile {
 	public static double reproductionFoodLevel = 3;
-	public static double foodNeededForMove = 0.01;
 	public static double cautionMutationSpan = 0.01;
 	
 	private int gridSize;
@@ -106,19 +104,36 @@ public class Prey extends Tile {
 		if(food <= 0)
 			die();
 
-		food -= foodNeededForMove;
+		food -= getMetabolism();
 		
 		double rand = random.nextDouble();
-		int lookForward = lookForward();
-		if(lookForward < 0) // Angler fish
-		{
+		int lookForward = look(direction);
+		if(lookForward < 0) { // Angler fish
 			rand = random.nextDouble();
-			if (rand < 0.5 ){
-				direction -= Math.PI/4;
-				rotateImage();
+			double dirA = direction + Math.PI*4 * (rand < 0.5 ? 1 : -1);
+			double dirB = direction + Math.PI*4 * (rand > 0.5 ? 1 : -1);
+			 
+			if(look(dirA) < 0) // Angler fish at A too
+			{
+				if(look(dirB) < 0) // Angler fishes everywhere
+					direction += Math.PI; // Go back
+				else // DirB is safe, go there
+					direction = dirB; 
 			}
-			else {
-				direction += Math.PI/4;
+			else //DirA is safe, go there
+				direction = dirA;
+			rotateImage();
+			
+		} else if(lookForward == 0) { // Empty
+			rand = random.nextDouble();
+			double dirA = direction + Math.PI*4 * (rand < 0.5 ? 1 : -1);
+			double dirB = direction + Math.PI*4 * (rand > 0.5 ? 1 : -1);
+			
+			if(look(dirA) > 0){ //Food in this dir., go there
+				direction = dirA;
+				rotateImage();
+			} else if(look(dirB) > 0){ //Food in this dir., go there
+				direction = dirB;
 				rotateImage();
 			}
 		}
@@ -177,7 +192,7 @@ public class Prey extends Tile {
 	 * Looks forward and return what is there.
 	 * @return 0, if title in front is empty. 1, if it is food, -1 if it is an angler fish.
 	 */
-	private int lookForward()
+	private int look(double direction)
 	{
 		double dx = Math.signum(Math.cos(direction));
 		double dy = Math.signum(Math.sin(direction));
