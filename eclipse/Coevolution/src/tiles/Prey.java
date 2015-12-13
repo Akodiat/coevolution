@@ -110,8 +110,8 @@ public class Prey extends Tile {
 		int lookForward = look(direction);
 		if(lookForward < 0) { // Angler fish
 			rand = random.nextDouble();
-			double dirA = direction + Math.PI*4 * (rand < 0.5 ? 1 : -1);
-			double dirB = direction + Math.PI*4 * (rand > 0.5 ? 1 : -1);
+			double dirA = direction + Math.PI/4 * (rand < 0.5 ? 1 : -1);
+			double dirB = direction + Math.PI/4 * (rand >= 0.5 ? 1 : -1);
 			 
 			if(look(dirA) < 0) // Angler fish at A too
 			{
@@ -126,8 +126,8 @@ public class Prey extends Tile {
 			
 		} else if(lookForward == 0) { // Empty
 			rand = random.nextDouble();
-			double dirA = direction + Math.PI*4 * (rand < 0.5 ? 1 : -1);
-			double dirB = direction + Math.PI*4 * (rand > 0.5 ? 1 : -1);
+			double dirA = direction + Math.PI/4 * (rand < 0.5 ? 1 : -1);
+			double dirB = direction + Math.PI/4 * (rand > 0.5 ? 1 : -1);
 			
 			if(look(dirA) > 0){ //Food in this dir., go there
 				direction = dirA;
@@ -138,9 +138,11 @@ public class Prey extends Tile {
 			}
 		}
 		
+		direction %= 2*Math.PI;
+		
 		x += Math.signum(Math.cos(direction));
 		y += Math.signum(Math.sin(direction));
-		
+				
 		x = (x + gridSize) % gridSize;
 		y = (y + gridSize) % gridSize;
 		
@@ -212,6 +214,7 @@ public class Prey extends Tile {
 			}
 		// If we don't have a angler fish in front of us
 		if(value == 0)
+		{
 			// Check for food
 			for (FoodTile f : foodTiles)
 				if(f.x == xInFront && f.y == yInFront)
@@ -219,6 +222,7 @@ public class Prey extends Tile {
 					value = 1;
 					break;
 				}
+		}
 		
 		// If we fail to think correctly, be mistaken.
 		value *= thinksCorrectly() ? 1 : -1;
@@ -232,5 +236,6 @@ public class Prey extends Tile {
 		Random r = new Random();
 		return r.nextDouble() < probCorrect;
 	}
+	
 
 }
