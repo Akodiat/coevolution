@@ -31,10 +31,11 @@ public class Window extends JFrame {
 	private double minMetabolism = 0.001;
 
 	private Dimension latticeDimension = new Dimension(400, 400);
-	private Dimension plotDimension = new Dimension(400, 300);;
+	private Dimension plotDimension = new Dimension(400, 150);;
 
 	private Lattice lattice;
-	private Plot2DPanel currentPlot;
+	private Plot2DPanel plotA;
+	private Plot2DPanel plotB;
 
 	private boolean enableVisualisation;
 	private boolean saveAllData = false;
@@ -54,12 +55,20 @@ public class Window extends JFrame {
 				maxMetabolism, minMetabolism);
 		lattice.setPreferredSize(latticeDimension);
 
-		currentPlot = new Plot2DPanel();
-		currentPlot.setPreferredSize(plotDimension);
+		plotA = new Plot2DPanel();
+		plotA.setPreferredSize(plotDimension);
+		plotB = new Plot2DPanel();
+		plotB.setPreferredSize(plotDimension);
+		
+		JSplitPane plotSplitPane = new JSplitPane(
+				JSplitPane.VERTICAL_SPLIT,
+                plotA, plotB);
+
+		plotSplitPane.setResizeWeight(0.5);
 		
 		JSplitPane splitPane = new JSplitPane(
 				JSplitPane.HORIZONTAL_SPLIT,
-                lattice, currentPlot);
+                lattice, plotSplitPane);
 		
 		add(splitPane);
 		
@@ -72,38 +81,49 @@ public class Window extends JFrame {
 
 	public void ex1()
 	{
-		currentPlot.setAxisLabel(0, "Timestep t");
-		currentPlot.setAxisLabel(1, "Population size");
+		plotA.setAxisLabel(0, "Timestep t");
+		plotA.setAxisLabel(1, "Population size");
 		double[] preySizeValues = new double[nIterations];
 		double[] anglSizeValues = new double[nIterations];
 		double[] foodSizeValues = new double[nIterations];
+		double[] brainSizeValues = new double[nIterations];
 		double[] iterationValues = new double[nIterations];
 		
 		for (int i = 0; i < nIterations; i++) {
 			iterationValues[i] = nIterations;
 		}
 
-		currentPlot.addLinePlot("Prey", iterationValues, preySizeValues);
-		currentPlot.addLinePlot("Angler fish", iterationValues, anglSizeValues);
-		currentPlot.addLinePlot("Food fishes", iterationValues, foodSizeValues);
+		plotA.addLinePlot("Prey", iterationValues, preySizeValues);
+		plotA.addLinePlot("Angler fish", iterationValues, anglSizeValues);
+		plotA.addLinePlot("Food fishes", iterationValues, foodSizeValues);
+		
+		plotB.addLinePlot("Average brain size", iterationValues, brainSizeValues);
 		
 		for (int i = 0; i < nIterations; i++) {
 			lattice.update();
 			preySizeValues[i] = lattice.getPreyPopulationSize();
 			anglSizeValues[i] = lattice.getAnglerFishPopulationSize();
 			foodSizeValues[i] = lattice.getFoodSize();
+			brainSizeValues[i] = lattice.getAverageBrainSize();
 			iterationValues[i] = i;
 			
-			currentPlot.removeAllPlots();
-			currentPlot.addLinePlot("Prey", iterationValues, preySizeValues);
-			currentPlot.addLinePlot("Angler fish", iterationValues, anglSizeValues);
-			currentPlot.addLinePlot("Food fishes", iterationValues, foodSizeValues);
+			plotA.removeAllPlots();
+			plotA.addLinePlot("Prey", iterationValues, preySizeValues);
+			plotA.addLinePlot("Angler fish", iterationValues, anglSizeValues);
+			plotA.addLinePlot("Food fishes", iterationValues, foodSizeValues);
 			
-			currentPlot.invalidate();
-			currentPlot.revalidate();
-			currentPlot.repaint();
+			plotB.removeAllPlots();
+			plotB.addLinePlot("Average brain size", iterationValues, brainSizeValues);
 			
-			System.out.println(lattice.getAverageBrainSize());
+			plotA.invalidate();
+			plotA.revalidate();
+			plotA.repaint();
+			
+			plotB.invalidate();
+			plotB.revalidate();
+			plotB.repaint();
+			
+			//System.out.println(lattice.getAverageBrainSize());
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {
