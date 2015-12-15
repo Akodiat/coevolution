@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 public class Prey extends Tile {
 	public static double reproductionFoodLevel = 3;
 	public static double cautionMutationSpan = 0.01;
+	public static double changeDirectionProb = 0.01;
 	
 	private int gridSize;
 	private double food;
@@ -134,6 +135,12 @@ public class Prey extends Tile {
 				rotateImage();
 			} else if(look(dirB) > 0){ //Food in this dir., go there
 				direction = dirB;
+				rotateImage();
+			}
+			else if(random.nextDouble() < changeDirectionProb && 
+					look(dirA) == 0)
+			{
+				direction = dirA;
 				rotateImage();
 			}
 		}
