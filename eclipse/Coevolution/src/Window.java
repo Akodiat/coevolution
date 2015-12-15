@@ -20,14 +20,14 @@ import org.math.plot.Plot2DPanel;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = -7609923067531544108L;
-	private int latticeSize = 40;
-	private double angerFishPercentage = 0.02;
-	private double foodPercentage = 0.4;
-	private int preyPopulationSize = 250;
+	private int latticeSize = 30;
+	private double angerFishPercentage = 0.01;
+	private double foodPercentage = 0.1;
+	private int preyPopulationSize = 50;
 	private int sleepInterval = 50;
 	private int nIterations = 700;
 	
-	private double maxMetabolism = 0.1;
+	private double maxMetabolism = 0.006;
 	private double minMetabolism = 0.001;
 
 	private Dimension latticeDimension = new Dimension(400, 400);
@@ -67,6 +67,7 @@ public class Window extends JFrame {
 		setVisible(enableVisualisation);
 		
 		//ex1();
+		ex2();
 	}
 
 	public void ex1()
@@ -101,6 +102,8 @@ public class Window extends JFrame {
 			currentPlot.invalidate();
 			currentPlot.revalidate();
 			currentPlot.repaint();
+			
+			System.out.println(lattice.getAverageBrainSize());
 			try {
 				Thread.sleep(sleepInterval);
 			} catch (InterruptedException e) {
@@ -109,6 +112,39 @@ public class Window extends JFrame {
 		}
 	}
 	
+	public void ex2(){
+		double[] afPercentage = { 0.0005, 0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.01, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.020, 0.021};//0.005, 0.01, 0.015, 0.02, 0.025, 0.030, 0.035, 0.040 };
+		//double[] maxMet = {0.026, 0.027, 0.028, 0.029, 0.030};
+		double[] maxMet = {0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.010, 0.011, 0.012, 0.013, 0.014, 0.015, 0.016, 0.017, 0.018, 0.019, 0.020, 0.021, 0.022, 0.023, 0.024, 0.025, 0.026, 0.027, 0.028, 0.029, 0.030};
+		int nIter = 10000;
+		int repetitions = 5;
+		try {
+			File file = new File("largeBashSmallGrid.txt");
+
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter bw = new BufferedWriter(fw);
+			for (int k = 0; k < maxMet.length; k++){
+				for (int j = 0; j < afPercentage.length; j++) {
+					for (int n = 0; n < repetitions; n++) {
+						Lattice lattice = new Lattice(latticeSize, afPercentage[j], foodPercentage, preyPopulationSize,
+								enableVisualisation,maxMet[k],minMetabolism);
+						for (int i = 0; i < nIter; i++) {
+							lattice.update();
+						}
+						bw.write(String.valueOf(maxMet[k]) + " " + String.valueOf(afPercentage[j]) + " " + String.valueOf(lattice.getAverageBrainSize()));
+						bw.newLine();
+						System.out.println("[" + (double)((double)(k+1)/(double)maxMet.length) + "] : maxMet: " + maxMet[k] + " | afPer: " + afPercentage[j] + " | aver. bs: " + lattice.getAverageBrainSize());
+					}
+					
+				}
+			}
+			
+			
+			bw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	public void collectSomething()
 	{
 		try {
