@@ -20,14 +20,14 @@ import org.math.plot.Plot2DPanel;
 
 public class Window extends JFrame {
 	private static final long serialVersionUID = -7609923067531544108L;
-	private int latticeSize = 30;
-	private double angerFishPercentage = 0.01;
-	private double foodPercentage = 0.1;
-	private int preyPopulationSize = 50;
+	private int latticeSize = 32;
+	private double angerFishPercentage = 0.015;
+	private double foodPercentage = 0.04;
+	private int preyPopulationSize = 15;
 	private int sleepInterval = 50;
-	private int nIterations = 700;
+	private int nIterations = 1200;
 	
-	private double maxMetabolism = 0.006;
+	private double maxMetabolism = 0.012;
 	private double minMetabolism = 0.001;
 
 	private Dimension latticeDimension = new Dimension(400, 400);
@@ -83,6 +83,9 @@ public class Window extends JFrame {
 	{
 		plotA.setAxisLabel(0, "Timestep t");
 		plotA.setAxisLabel(1, "Population size");
+
+		plotB.setAxisLabel(0, "Timestep t");
+		plotB.setAxisLabel(1, "Average intelligence");
 		double[] preySizeValues = new double[nIterations];
 		double[] anglSizeValues = new double[nIterations];
 		double[] foodSizeValues = new double[nIterations];

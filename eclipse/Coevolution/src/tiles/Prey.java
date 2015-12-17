@@ -79,12 +79,12 @@ public class Prey extends Tile {
 	    g.rotate(angle, w / 2, h / 2);
 	    
 	    Color color = new Color(
-	    		(int) (brainSize*255), 		// R
+	    		(int) ((1-brainSize)*255), 		// R
 	    		100,						// G
-	    		(int) ((1-brainSize)*255),	// B
+	    		(int) (brainSize*255),	// B
 	    		255							// A
 	    );
-	    color = brainSize < 0.5 ? color.darker() : color.brighter();
+	    color = brainSize < 0.5 ? color.brighter() : color.darker();
 	    g.drawRenderedImage(tileImage, null);
 	    g.setColor(color);
 	    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.75f));
