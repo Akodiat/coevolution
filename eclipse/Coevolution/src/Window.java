@@ -133,6 +133,13 @@ public class Window extends JFrame {
 				e.printStackTrace();
 			}
 		}
+		Plot2DPanel hist = new Plot2DPanel();
+		double[] is = lattice.getIntelligences();
+		hist.addHistogramPlot("Intelligence distribution", is, 20);
+        JFrame frame = new JFrame("a plot panel");
+        frame.setSize(600, 600);
+        frame.setContentPane(hist);
+        frame.setVisible(true);
 	}
 	
 	public void ex2(){

@@ -131,6 +131,14 @@ public class Lattice extends JPanel {
 		}
 	}
 	
+	public double[] getIntelligences()
+	{
+		double[] is = new double[preyPopulation.size()];
+		for(int i=0; i<is.length; i++)
+			is[i]=preyPopulation.get(i).getBrainSize();
+		return is;
+	}
+	
 	public int getPreyPopulationSize()
 	{
 		return preyPopulation.size();
